@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Detalle del Pedido"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#333"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- FOTO EN GRANDE -->
+        <ImageView
+            android:id="@+id/imgDetalleFoto"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:background="#EEEEEE"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- DATOS DEL CLIENTE -->
+        <TextView android:text="Cliente:" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/tvDetalleCliente" android:textSize="18sp" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+        <TextView android:text="Teléfono:" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/tvDetalleTelefono" android:textSize="16sp" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+        <TextView android:text="Dirección:" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/tvDetalleDireccion" android:textSize="16sp" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+        <TextView android:text="Detalle del Pedido:" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/tvDetallePedido" android:textSize="16sp" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+        <TextView android:text="Forma de Pago:" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/tvDetallePago" android:textSize="16sp" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#DDD" android:layout_marginVertical="10dp"/>
+
+        <!-- DATOS TÉCNICOS -->
+        <TextView android:text="Coordenadas GPS:" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/tvDetalleGPS" android:textSize="14sp" android:fontFamily="monospace" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+        <TextView android:text="Fecha de Creación:" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/tvDetalleFecha" android:textSize="14sp" android:layout_marginBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+        <TextView android:text="Estado de Sincronización:" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/tvDetalleEstado" android:textSize="18sp" android:textStyle="bold" android:layout_marginBottom="5dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+        <TextView android:id="@+id/tvDetalleError" android:visibility="gone" android:textColor="#D32F2F" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</ScrollView>

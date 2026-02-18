@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- CABECERA: TÍTULO Y BOTÓN SALIR -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nuevo Pedido"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#333333"/>
+
+            <!-- BOTÓN DE CERRAR SESIÓN -->
+            <Button
+                android:id="@+id/btnCerrarSesionMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Salir"
+                android:backgroundTint="#D32F2F"
+                android:minHeight="40dp"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <!-- BOTÓN QR -->
+        <Button
+            android:id="@+id/btnScanQR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📸 Leer Código QR (Autocompletar)"
+            android:backgroundTint="#673AB7"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- CAMPOS DE TEXTO -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del Cliente">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Teléfono">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Dirección / Referencia">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDireccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPostalAddress"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Detalle del Pedido">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDetalle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="3"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- TIPO DE PAGO -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tipo de Pago:"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold"/>
+
+        <RadioGroup
+            android:id="@+id/rgPago"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/rbEfectivo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Efectivo"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/rbTransferencia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Transferencia"
+                android:layout_marginStart="20dp"/>
+        </RadioGroup>
+
+        <!-- SECCIÓN FOTO Y GPS -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginVertical="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ubicación y Evidencia:"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btnFoto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="📷 Foto"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnGps"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🔄 GPS"
+                android:backgroundTint="#FF9800"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvUbicacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GPS: Esperando actualización..."
+            android:gravity="center"
+            android:background="#E1F5FE"
+            android:padding="8dp"
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="#E0E0E0"
+            android:layout_marginTop="10dp"
+            android:contentDescription="Vista previa foto"/>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <Button
+            android:id="@+id/btnGuardar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GUARDAR PEDIDO (SQLITE)"
+            android:backgroundTint="#4CAF50"
+            android:layout_marginTop="30dp"
+            android:padding="15dp"/>
+
+        <Button
+            android:id="@+id/btnVerLista"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ver Lista / Sincronizar"
+            android:backgroundTint="#2196F3"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+</ScrollView>
