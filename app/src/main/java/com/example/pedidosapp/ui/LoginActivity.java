@@ -32,33 +32,29 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // 1. Auto-login: Si ya hay token, pasamos directo
+        // Auto-login: Si ya hay un token, saltamos al Main
         if (getToken() != null) {
             irAMainActivity();
             return;
         }
 
+        // 1. Vincular vistas
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         tvGoToRegister = findViewById(R.id.tvGoToRegister);
 
-        // Listener para ir a la pantalla de registro
+
+        // 2. Acción: Iniciar Sesión
+        btnLogin.setOnClickListener(v -> login());
+
+        // 3. Acción: Ir al Registro
         tvGoToRegister.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
-
-        // Configurar hint para que el usuario sepa que debe ingresar un correo
-        etUsername.setHint("Correo electrónico (ej: user@test.com)");
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
     }
+
 
     private void login() {
         String email = etUsername.getText().toString().trim();

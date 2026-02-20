@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:elevation="4dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="8dp">
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,15 +15,24 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <!-- Foto miniatura -->
-        <ImageView
-            android:id="@+id/imgFoto"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@android:drawable/ic_menu_camera"
-            android:scaleType="centerCrop"
-            android:background="#EEEEEE"/>
+        <!-- Contenedor de la Imagen (Izquierda) -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#F0F0F0">
 
+            <ImageView
+                android:id="@+id/imgFoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_camera"
+                android:contentDescription="Miniatura del pedido" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- Contenedor de Información (Centro) -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -34,27 +44,55 @@
                 android:id="@+id/tvCliente"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nombre Cliente"
+                android:text="Nombre del Cliente"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:textSize="16sp"/>
+                android:textColor="#212121"/>
 
             <TextView
                 android:id="@+id/tvFecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2023-10-27 10:00"
-                android:textSize="12sp"
-                android:textColor="#757575"/>
+                android:text="2024-10-12 14:30"
+                android:textSize="13sp"
+                android:textColor="#757575"
+                android:layout_marginTop="2dp"/>
 
+            <TextView
+                android:id="@+id/tvUbicacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📍 Ubicación no disponible"
+                android:textSize="12sp"
+                android:textColor="#1976D2"
+                android:layout_marginTop="2dp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <!-- Etiqueta de Estado usando el Canvas (badge_status) -->
             <TextView
                 android:id="@+id/tvEstado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PENDIENTE"
+                android:textSize="11sp"
                 android:textStyle="bold"
-                android:textColor="#FF9800"
-                android:layout_marginTop="4dp"/>
+                android:textColor="#FFFFFF"
+                android:background="@drawable/badge_status"
+                android:layout_marginTop="10dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:gravity="center"
+                android:minWidth="90dp"/>
         </LinearLayout>
+
+        <!-- Icono indicador (Derecha) -->
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/ic_media_play"
+            android:layout_marginStart="8dp"
+            app:tint="#E0E0E0" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

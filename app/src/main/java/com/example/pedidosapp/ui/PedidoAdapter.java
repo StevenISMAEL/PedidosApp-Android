@@ -1,6 +1,7 @@
 package com.example.pedidosapp.ui;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -47,16 +48,24 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.PedidoView
         holder.tvFecha.setText(pedido.getFecha());
         holder.tvEstado.setText(pedido.getEstado());
 
-        // Colores
-        if ("SINCRONIZADO".equals(pedido.getEstado())) {
-            holder.tvEstado.setTextColor(Color.parseColor("#388E3C"));
-        } else if ("ERROR".equals(pedido.getEstado())) {
-            holder.tvEstado.setTextColor(Color.RED);
+        // Configuración de ubicación
+        if (pedido.getLatitud() != 0 || pedido.getLongitud() != 0) {
+            holder.tvUbicacion.setText(String.format("📍 %.4f , %.4f", pedido.getLatitud(), pedido.getLongitud()));
         } else {
-            holder.tvEstado.setTextColor(Color.parseColor("#F57C00"));
+            holder.tvUbicacion.setText("📍 Ubicación no disponible");
         }
 
-        // Foto miniatura
+        // Colores dinámicos del Badge
+        if ("SINCRONIZADO".equals(pedido.getEstado())) {
+            holder.tvEstado.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+        } else if ("ERROR".equals(pedido.getEstado())) {
+            holder.tvEstado.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D32F2F")));
+        } else {
+            holder.tvEstado.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF9800")));
+        }
+
+        // Cargar Foto con limpieza de caché visual
+        holder.imgFoto.setImageTintList(null); // Quita el gris de "placeholder"
         if (pedido.getFotoPath() != null && !pedido.getFotoPath().isEmpty()) {
             File imgFile = new File(pedido.getFotoPath());
             if (imgFile.exists()) {
@@ -64,13 +73,13 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.PedidoView
                 holder.imgFoto.setImageBitmap(myBitmap);
             } else {
                 holder.imgFoto.setImageResource(android.R.drawable.ic_menu_camera);
+                holder.imgFoto.setImageTintList(ColorStateList.valueOf(Color.LTGRAY));
             }
         }
 
-        // --- AQUÍ ESTÁ EL EVENTO CLICK ---
+        // Clic para detalle
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), DetallePedidoActivity.class);
-            // Pasamos todos los datos a la otra pantalla
             intent.putExtra("nombre", pedido.getNombreCliente());
             intent.putExtra("telefono", pedido.getTelefono());
             intent.putExtra("direccion", pedido.getDireccion());
@@ -82,7 +91,6 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.PedidoView
             intent.putExtra("fecha", pedido.getFecha());
             intent.putExtra("estado", pedido.getEstado());
             intent.putExtra("error", pedido.getMensajeError());
-
             v.getContext().startActivity(intent);
         });
     }
@@ -93,7 +101,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.PedidoView
     }
 
     public static class PedidoViewHolder extends RecyclerView.ViewHolder {
-        TextView tvCliente, tvFecha, tvEstado;
+        TextView tvCliente, tvFecha, tvEstado, tvUbicacion;
         ImageView imgFoto;
 
         public PedidoViewHolder(@NonNull View itemView) {
@@ -101,6 +109,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.PedidoView
             tvCliente = itemView.findViewById(R.id.tvCliente);
             tvFecha = itemView.findViewById(R.id.tvFecha);
             tvEstado = itemView.findViewById(R.id.tvEstado);
+            tvUbicacion = itemView.findViewById(R.id.tvUbicacion);
             imgFoto = itemView.findViewById(R.id.imgFoto);
         }
     }
