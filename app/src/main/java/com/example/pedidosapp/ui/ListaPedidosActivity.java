@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import com.example.pedidosapp.data.NetworkUtils;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,7 +54,10 @@ public class ListaPedidosActivity extends AppCompatActivity {
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-
+            if (!NetworkUtils.isInternetAvailable(this)) {
+                Toast.makeText(this, "⚠️ No hay conexión a internet. Intenta más tarde.", Toast.LENGTH_LONG).show();
+                return;
+            }
             String userId = getUsuarioActual();
             // Pasamos el ID al DAO
             List<Pedido> pendientes = AppDatabase.getDatabase(this).pedidoDao().getPedidosPorSincronizar(userId);
