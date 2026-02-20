@@ -86,13 +86,16 @@
                 android:minWidth="90dp"/>
         </LinearLayout>
 
-        <!-- Icono indicador (Derecha) -->
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@android:drawable/ic_media_play"
+        <!-- BONUS: Botón de Mapa en la fila -->
+        <ImageButton
+            android:id="@+id/btnVerMapaFila"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/ic_dialog_map"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_marginStart="8dp"
-            app:tint="#E0E0E0" />
+            android:contentDescription="Ver Ruta"
+            app:tint="#311B92" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

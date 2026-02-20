@@ -59,5 +59,6 @@ dependencies {
     // 4. LECTOR DE CÓDIGO QR (ML Kit)
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 
 }

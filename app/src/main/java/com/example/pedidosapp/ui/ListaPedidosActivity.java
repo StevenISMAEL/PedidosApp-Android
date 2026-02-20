@@ -1,10 +1,9 @@
 package com.example.pedidosapp.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import com.example.pedidosapp.data.NetworkUtils;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pedidosapp.R;
 import com.example.pedidosapp.data.AppDatabase;
 import com.example.pedidosapp.data.RetrofitClient;
+import com.example.pedidosapp.data.ExportUtils;
 import com.example.pedidosapp.model.Pedido;
 
 import java.util.ArrayList;
@@ -28,143 +28,46 @@ import retrofit2.Response;
 public class ListaPedidosActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private Button btnSincronizar;
+    private Button btnSincronizar, btnExportar, btnCerrarSesion;
     private PedidoAdapter adapter;
     private List<Pedido> listaPedidos = new ArrayList<>();
+
+    private int pedidosPendientesDeProcesar = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_pedidos);
 
+        // 1. Vincular Vistas
         recyclerView = findViewById(R.id.recyclerView);
         btnSincronizar = findViewById(R.id.btnSincronizar);
-
+        btnExportar = findViewById(R.id.btnExportarCSV);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Cargar datos iniciales
+        // 2. Cargar la lista
         cargarPedidosLocales();
 
+        // 3. Acciones de Botones
         btnSincronizar.setOnClickListener(v -> sincronizarPedidosPendientes());
-    }
 
-    private void sincronizarPedidosPendientes() {
-        btnSincronizar.setEnabled(false);
-        btnSincronizar.setText("Sincronizando...");
-
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            if (!NetworkUtils.isInternetAvailable(this)) {
-                Toast.makeText(this, "⚠️ No hay conexión a internet. Intenta más tarde.", Toast.LENGTH_LONG).show();
-                return;
-            }
-            String userId = getUsuarioActual();
-            // Pasamos el ID al DAO
-            List<Pedido> pendientes = AppDatabase.getDatabase(this).pedidoDao().getPedidosPorSincronizar(userId);
-
-            if (pendientes.isEmpty()) {
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "No hay pedidos pendientes", Toast.LENGTH_SHORT).show();
-                    btnSincronizar.setEnabled(true);
-                    btnSincronizar.setText("Sincronizar Ahora");
-                });
-                return;
-            }
-
-            // Iterar y enviar uno por uno
-            for (Pedido p : pendientes) {
-                enviarPedidoAPI(p);
+        // LÓGICA DEL BOTÓN EXPORTAR
+        btnExportar.setOnClickListener(v -> {
+            if (listaPedidos != null && !listaPedidos.isEmpty()) {
+                ExportUtils.exportarPedidosACV(this, listaPedidos);
+                Toast.makeText(this, "Generando archivo CSV...", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "No hay datos para exportar", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void enviarPedidoAPI(Pedido pedido) {
-        String token = "Bearer " + getToken();
-
-        // Nota: Asegúrate que tu API soporte el objeto Pedido tal cual,
-        // a veces hay que convertirlo a un DTO específico según Swagger.
-        RetrofitClient.getApiService().crearPedido(token, pedido).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    pedido.setEstado("SINCRONIZADO");
-                    pedido.setMensajeError("");
-                    actualizarPedidoEnBD(pedido);
-                } else {
-                    // 1. Capturamos el error
-                    String errorMsg = "Código: " + response.code();
-                    try {
-                        if (response.errorBody() != null) {
-                            // Leemos el mensaje que nos manda el servidor (C#)
-                            errorMsg += "\nDetalle: " + response.errorBody().string();
-                        }
-                    } catch (Exception e) {
-                        errorMsg += "\nError al leer cuerpo: " + e.getMessage();
-                    }
-
-                    // 2. Guardamos en BD
-                    pedido.setEstado("ERROR");
-                    pedido.setMensajeError(errorMsg);
-                    actualizarPedidoEnBD(pedido);
-
-                    // 3. ¡AQUÍ ESTÁ LA SOLUCIÓN!
-                    // Usamos Log.e para verlo en Android Studio
-                    android.util.Log.e("ERROR_API", errorMsg);
-
-                    // 4. Y mostramos una ALERTA en pantalla (que sí se puede leer completa)
-                    String finalErrorMsg = errorMsg;
-                    runOnUiThread(() -> {
-                        new androidx.appcompat.app.AlertDialog.Builder(ListaPedidosActivity.this)
-                                .setTitle("Error de Sincronización")
-                                .setMessage(finalErrorMsg) // Aquí se verá todo el texto
-                                .setPositiveButton("Entendido", null)
-                                .show();
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                pedido.setEstado("ERROR");
-                pedido.setMensajeError("Fallo Red: " + t.getMessage());
-                actualizarPedidoEnBD(pedido);
-                runOnUiThread(() -> Toast.makeText(ListaPedidosActivity.this, "Fallo Red: " + t.getMessage(), Toast.LENGTH_LONG).show());
-            }
-        });
-    }
-
-    private void actualizarPedidoEnBD(Pedido p) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            AppDatabase.getDatabase(this).pedidoDao().update(p);
-
-            // Recargar lista visualmente al terminar
-            cargarPedidosLocales();
-
-            runOnUiThread(() -> {
-                btnSincronizar.setEnabled(true);
-                btnSincronizar.setText("Sincronizar Ahora");
-            });
-        });
-    }
-
-    private String getToken() {
-        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        return prefs.getString("auth_token", "");
-    }
-
-    // 1. Método para obtener el usuario
-    private String getUsuarioActual() {
-        return getSharedPreferences("AppPrefs", MODE_PRIVATE).getString("user_email", "invitado");
-    }
-
-    // 2. Actualizar carga de lista
     private void cargarPedidosLocales() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            String userId = getUsuarioActual();
-            // Pasamos el ID al DAO
-            listaPedidos = AppDatabase.getDatabase(this).pedidoDao().getAllPedidos(userId);
+            // Obtenemos el usuario actual para filtrar (Bonus Multi-usuario)
+            String userEmail = getSharedPreferences("AppPrefs", MODE_PRIVATE).getString("user_email", "");
+            listaPedidos = AppDatabase.getDatabase(this).pedidoDao().getAllPedidos(userEmail);
 
             runOnUiThread(() -> {
                 if (adapter == null) {
@@ -175,5 +78,75 @@ public class ListaPedidosActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    private void sincronizarPedidosPendientes() {
+        btnSincronizar.setEnabled(false);
+        btnSincronizar.setText("Sincronizando...");
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            String userEmail = getSharedPreferences("AppPrefs", MODE_PRIVATE).getString("user_email", "");
+            List<Pedido> pendientes = AppDatabase.getDatabase(this).pedidoDao().getPedidosPorSincronizar(userEmail);
+
+            if (pendientes.isEmpty()) {
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "¡Todo al día!", Toast.LENGTH_SHORT).show();
+                    resetBotonsincronizar();
+                });
+                return;
+            }
+
+            pedidosPendientesDeProcesar = pendientes.size();
+            for (Pedido p : pendientes) {
+                enviarPedidoAPI(p);
+            }
+        });
+    }
+
+    private void enviarPedidoAPI(Pedido pedido) {
+        String token = "Bearer " + getToken();
+        RetrofitClient.getApiService().crearPedido(token, pedido).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    pedido.setEstado("SINCRONIZADO");
+                    pedido.setMensajeError("");
+                    actualizarPedidoEnBD(pedido);
+                } else {
+                    pedido.setEstado("ERROR");
+                    pedido.setMensajeError("Error: " + response.code());
+                    actualizarPedidoEnBD(pedido);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                pedido.setEstado("ERROR");
+                pedido.setMensajeError("Red: " + t.getMessage());
+                actualizarPedidoEnBD(pedido);
+            }
+        });
+    }
+
+    private void actualizarPedidoEnBD(Pedido p) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            AppDatabase.getDatabase(this).pedidoDao().update(p);
+            pedidosPendientesDeProcesar--;
+            if (pedidosPendientesDeProcesar <= 0) {
+                cargarPedidosLocales();
+                runOnUiThread(() -> resetBotonsincronizar());
+            }
+        });
+    }
+
+    private void resetBotonsincronizar() {
+        btnSincronizar.setEnabled(true);
+        btnSincronizar.setText("☁️ Sincronizar Pendientes");
+    }
+
+    private String getToken() {
+        return getSharedPreferences("AppPrefs", MODE_PRIVATE).getString("auth_token", "");
     }
 }

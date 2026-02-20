@@ -1,58 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F2F5">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F5F5F5">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:text="Historial de Pedidos"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:textColor="#333"/>
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarLista"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#311B92">
+    <!-- BOTÓN DE SINCRONIZACIÓN (Nube) -->
+    <Button
+        android:id="@+id/btnSincronizar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="☁️ Sincronizar Pendientes"
+        android:backgroundTint="#2196F3"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mis Pedidos"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+    <!-- NUEVO: BOTÓN DE EXPORTACIÓN (Excel/CSV) -->
+    <Button
+        android:id="@+id/btnExportarCSV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="📊 Exportar Reporte CSV (Excel)"
+        android:backgroundTint="#455A64"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"/>
 
-    <LinearLayout
+    <!-- LISTA DE PEDIDOS -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="12dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:scrollbars="vertical"/>
 
-        <!-- Botón de Sincronización Estilizado -->
-        <Button
-            android:id="@+id/btnSincronizar"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:text="☁️ SINCRONIZAR PENDIENTES"
-            android:backgroundTint="#2196F3"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"
-            app:cornerRadius="12dp"
-            app:icon="@android:drawable/stat_sys_upload"
-            app:iconGravity="textStart"/>
-
-        <!-- RecyclerView con sombreado -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="80dp"/>
-
-    </LinearLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
